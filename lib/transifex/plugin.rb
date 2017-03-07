@@ -1,33 +1,40 @@
 module Danger
-  # This is your plugin class. Any attributes or methods you expose here will
-  # be available from within your Dangerfile.
+  # Plugin to push Transifex translations
   #
-  # To be published on the Danger plugins site, you will need to have
-  # the public interface documented. Danger uses [YARD](http://yardoc.org/)
-  # for generating documentation from your plugin source, and you can verify
-  # by running `danger plugins lint` or `bundle exec rake spec`.
+  # @example Pushes your source language translations
   #
-  # You should replace these comments with a public description of your library.
-  #
-  # @example Ensure people are well warned about merging on Mondays
-  #
-  #          my_plugin.warn_on_mondays
+  #          transifex.push_source(path/to/your.strings)
   #
   # @see  Emil Bogren/danger-transifex
-  # @tags monday, weekends, time, rattata
+  # @tags translations, transifex
   #
   class DangerTransifex < Plugin
 
-    # An attribute that you can read/write from your Dangerfile
-    #
-    # @return   [Array<String>]
-    attr_accessor :my_attribute
+    # Configure the Transifex client with your project name and resource.
+    # The resource is a single source of translations.
+    def configure(project_name, resource_name)
+      require 'transifex'
+      Transifex.configure do |c|
+        c.client_login = ENV['TRANSIFEX_API']
+        c.client_secret = ENV['TRANSIFEX_API_TOKEN']
+      end
 
-    # A method that you can call from your Dangerfile
-    # @return   [Array<String>]
-    #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+      @project = Transifex::Project.new(project_name)
+      @resource = @project.resource(resource_name)
+    end
+
+    # Push the source language file to transifex, please note the source
+    # is the only allowed resource to use with this method.
+    def push_source(type, source)
+      unless @resource.nil?
+        begin
+          message("Translations changed - pushing changes to Transifex")
+          @resource.content.update({:i18n_type => type, :content => source})
+          message("Translations updated \u{2705}")
+        rescue
+          warn("Updating translations failed \u{274C}")
+        end
+      end
     end
   end
 end

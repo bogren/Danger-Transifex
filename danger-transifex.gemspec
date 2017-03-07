@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.name          = 'danger-transifex'
   spec.version       = Transifex::VERSION
   spec.authors       = ['Emil Bogren']
-  spec.email         = ['emil.bogren@fripost.org']
-  spec.description   = %q{A short description of danger-transifex.}
-  spec.summary       = %q{A longer description of danger-transifex.}
+  spec.email         = ['info@emilbogren.com']
+  spec.description   = %q{Transifex + Danger.}
+  spec.summary       = %q{Manage your Transifex translations in Danger.}
   spec.homepage      = 'https://github.com/Emil Bogren/danger-transifex'
   spec.license       = 'MIT'
 
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'danger-plugin-api', '~> 1.0'
+  spec.add_runtime_dependency 'transifex-interface-ruby'
 
   # General ruby development
   spec.add_development_dependency 'bundler', '~> 1.3'

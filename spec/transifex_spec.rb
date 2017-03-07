@@ -6,34 +6,32 @@ module Danger
       expect(Danger::DangerTransifex.new(nil)).to be_a Danger::Plugin
     end
 
-    #
-    # You should test your custom attributes and methods here
-    #
     describe 'with Dangerfile' do
       before do
         @dangerfile = testing_dangerfile
         @my_plugin = @dangerfile.transifex
       end
 
-      # Some examples for writing tests
-      # You should replace these with your own.
+      context "Failed request" do
+        before do
+          allow_any_instance_of(Transifex::ResourceComponents::Content).to recieve(:update).with(anything).and raise_error
+        end
 
-      it "Warns on a monday" do
-        monday_date = Date.parse("2016-07-11")
-        allow(Date).to receive(:today).and_return monday_date
-
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq(["Trying to merge code on a Monday"])
+        it "Warns on fail" do
+          @my_plugin.push_source("TXT", "path/to/translations.txt")
+          expect(@dangerfile.status_report[:warnings]).to eq(["Updating translations failed \u{274C}"])
+        end
       end
 
-      it "Does nothing on a tuesday" do
-        monday_date = Date.parse("2016-07-12")
-        allow(Date).to receive(:today).and_return monday_date
+      context "Successful request" do
+        before do
+          allow_any_instance_of(Transifex::ResourceComponents::Content).to recieve(:update).with(anything).and anything
+        end
 
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq([])
+        it "Messages on success" do
+          @my_plugin.push_source("TXT", "path/to/translations.txt")
+          expect(@dangerfile.status_report[:messages]).to eq(["Translations updated \u{2705}"])
+        end
       end
 
     end
