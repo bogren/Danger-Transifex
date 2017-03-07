@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['info@emilbogren.com']
   spec.description   = %q{Transifex + Danger.}
   spec.summary       = %q{Manage your Transifex translations in Danger.}
-  spec.homepage      = 'https://github.com/Emil Bogren/danger-transifex'
+  spec.homepage      = 'https://github.com/bogren/danger-transifex'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
