@@ -3,7 +3,11 @@ module Danger
   #
   # @example Pushes your source language translations
   #
-  #          transifex.push_source(path/to/your.strings)
+  # made_translation_changes = git.modified_files.include?("path/to/translations.strings")
+  # if made_translation_changes
+  #     transifex.configure("your_project", "your_resource")
+  #     transifex.push_source("STRINGS", "path/to/translations.strings")
+  # end
   #
   # @see  Emil Bogren/danger-transifex
   # @tags translations, transifex
